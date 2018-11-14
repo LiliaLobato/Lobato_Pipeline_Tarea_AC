@@ -345,7 +345,7 @@ MUX_PCJump
 //******************************************************************/
 //******************************************************************/
 //******************************************************************/
-//Register agregado en Tarea 2
+//Register agregados en Tarea 2
 /*
 * Se necesitan 4 PLRegister:
 * IF/ID
@@ -362,7 +362,11 @@ IF_ID
 	.clk(clk),
 	.reset(reset),
 	.enable(1),
+	// PC, Instruction
+	//2
 	.DataInput( ),
+	// PC, Instruction
+	//2
 	.DataOutput( )
 );
 
@@ -372,7 +376,13 @@ ID_EX
 	.clk(clk),
 	.reset(reset),
 	.enable(1),
+	//ReadData1, ReadData2, SignExtend, InstrWire[20:16], InstrWire[15:11],
+	//RegDest, ALUSrc, MemWrite, MemToReg, RegWrite, PC, ALUOP, MemRead, BranchEQ_NE
+	//14
 	.DataInput( ),
+	//ALUOP, MemRead, BranchEQ_NE, RegWrite, MemtoReg, MemWrite, ALUSrc, RegDst
+	//ReadData1, ReadData2, InstrWire[20:16], InstrWire[15:11], SignExtend, PC
+	//14
 	.DataOutput( )
 );
 
@@ -382,7 +392,13 @@ EX_MEM
 	.clk(clk),
 	.reset(reset),
 	.enable(1),
+	//BranchEQ_NE, MemRead, RegWrite, MemtoReg, MemWrite, Zero, ALUResult,
+	//WriteData(ReadData2), WriteReg, PCShift2
+	//10
 	.DataInput( ),
+	//MemRead, BranchEQ_NE, RegWrite, MemtoReg, MemWrite, Zero, ALUResult,
+	//WriteData(ReadData2), WriteReg, PCShift2
+	//10
 	.DataOutput( )
 );
 
@@ -392,7 +408,11 @@ MEM_WB
 	.clk(clk),
 	.reset(reset),
 	.enable(1),
+	// RegWrite, MemtoReg, ALUResult, ReadData, WriteReg
+	//5
 	.DataInput( ),
+	//RegWrite, MemtoReg, ALUResult, ReadData, WriteReg
+	//5
 	.DataOutput( )
 );
 
