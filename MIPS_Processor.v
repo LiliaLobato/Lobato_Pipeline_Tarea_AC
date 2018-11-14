@@ -90,6 +90,45 @@ wire [31:0] MUX_ForRetJumpAndJump;
 wire [31:0] MUX_Jal_ReadData_ALUResult_wire;
 
 //Agregado en Tarea 2
+//IF_ID
+wire [31:0] IF_ID_pc_wire;
+wire [31:0] IF_ID_instruction_bus_wire;
+
+//ID_EX
+wire [31:0] ID_EX_read_data_1_wire;
+wire [31:0] ID_EX_read_data_2_wire;
+wire [31:0] ID_EX_Inmmediate_extend_wire;
+wire [31:0] ID_EX_pc_wire;
+wire [4:0] ID_EX_instruction_20_16_wire;
+wire [4:0] ID_EX_instruction_15_11_wire;
+wire [2:0] ID_EX_aluop_wire; //DUDA
+wire ID_EX_MemRead_wire;
+wire ID_EX_branch_eq_ne_wire;
+wire ID_EX_reg_write_wire;
+wire ID_EX_MemWrite_wire;
+wire ID_EX_alu_src_wire;
+wire ID_EX_reg_dst_wire;
+wire ID_EX_MemtoReg_wire;
+
+//EX_MEM
+wire [31:0] EX_MEM_alu_result_wire;
+wire [31:0] EX_MEM_write_data_wire;
+wire [31:0] EX_MEM_pc_to_branch_wire;
+wire [4:0] EX_MEM_write_register_wire;
+wire EX_MEM_MemRead_wire;
+wire EX_MEM_branch_eq_ne_wire;
+wire EX_MEM_reg_write_wire;
+wire EX_MEM_MemtoReg_wire;
+wire EX_MEM_MemWrite_wire;
+wire EX_MEM_zero_wire;
+
+//MEM_WB
+wire [31:0] MEM_WB_alu_result_wire;
+wire [31:0] MEM_WB_ReadData_wire;
+wire [4:0] MEM_WB_write_register_wire;
+wire MEM_WB_MemtoReg_wire;
+wire MEM_WB_reg_write_wire;
+
 
 //******************************************************************/
 //******************************************************************/
@@ -370,8 +409,6 @@ IF_ID
 	.DataInput( ),
 	// PC, Instruction
 	//2
-	wire IF_ID_PC_wire;
-	wire IF_ID_Instruction_wire;
 	.DataOutput( )
 );
 
@@ -389,20 +426,6 @@ ID_EX
 	//ALUOp, MemRead, BranchEQ_NE, RegWrite, MemtoReg, MemWrite, ALUSrc, RegDst
 	//ReadData1, ReadData2, InstrWire[20:16], InstrWire[15:11], SignExtend, PC
 	//14
-	wire ID_EX_ALUOp_wire;
-	wire ID_EX_MemRead_wire;
-	wire ID_EX_BranchEQ_NE_wire;
-	wire ID_EX_RegWrite_wire;
-	wire ID_EX_MemWrite_wire;
-	wire ID_EX_ALUSrc_wire;
-	wire ID_EX_RegDst_wire;
-	wire ID_EX_ReadData1_wire;
-	wire ID_EX_ReadData2_wire;
-	wire ID_EX_InmmediateExtend_wire;
-	wire ID_EX_PC_wire;
-	wire ID_EX_MemtoReg_wire;
-	wire ID_EX_Instruction_20_16_wire;
-	wire ID_EX_Instruction_15_11_wire;
 	.DataOutput( )
 );
 
@@ -420,16 +443,6 @@ EX_MEM
 	//MemRead, BranchEQ_NE, RegWrite, MemtoReg, MemWrite, Zero, ALUResult,
 	//WriteData(ReadData2), WriteReg, PCShift2
 	//10
-	wire EX_MEM_MemRead_wire;
-	wire EX_MEM_Branch_EQ_NE_wire;
-	wire EX_MEM_RegWrite_wire;
-	wire EX_MEM_MemtoReg_wire;
-	wire EX_MEM_MemWrite_wire;
-	wire EX_MEM_Zero_wire;
-	wire EX_MEM_ALUResult_wire;
-	wire EX_MEM_WriteData_wire;
-	wire EX_MEM_WriteReg_wire;
-	wire EX_MEM_PC_Shift2_wire;
 	.DataOutput( )
 );
 
@@ -445,11 +458,6 @@ MEM_WB
 	.DataInput( ),
 	//RegWrite, MemtoReg, ALUResult, ReadData, WriteReg
 	//5
-	wire MEM_WB_RegWrite_wire;
-	wire MEM_WB_MemtoReg_wire;
-	wire MEM_WB_ALUResult_wire;
-	wire MEM_WB_ReadData_wire;
-	wire MEM_WB_WriteReg_wire;
 	.DataOutput( )
 );
 
