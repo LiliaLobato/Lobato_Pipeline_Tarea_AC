@@ -1,3 +1,4 @@
+
 /******************************************************************
 * Description
 *	This is the top-level of a MIPS processor that can execute the next set of instructions:
@@ -406,10 +407,10 @@ IF_ID
 	.enable(1),
 	// PC, Instruction
 	//2
-	.DataInput( ),
+	.DataInput(pc_wire [31:0], instruction_bus_wire [31:0]),
 	// PC, Instruction
 	//2
-	.DataOutput( )
+	.DataOutput(IF_ID_pc_wire [31:0], IF_ID_instruction_bus_wire [31:0])
 );
 
 PLRegister
