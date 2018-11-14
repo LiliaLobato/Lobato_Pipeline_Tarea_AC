@@ -442,7 +442,6 @@ ID_EX
 	//ALUOp, MemRead, BranchEQ_NE, RegWrite, MemtoReg, MemWrite, ALUSrc, RegDst
 	//ReadData1, ReadData2, InstrWire[20:16], InstrWire[15:11], SignExtend, PC
 	//14
-	
 	.DataOutput({
 		ID_EX_read_data_1_wire [31:0],
 		ID_EX_read_data_2_wire [31:0],
@@ -471,11 +470,33 @@ EX_MEM
 	//WriteData(ReadData2), WriteReg, PCShift2
 	//10
 	//Se alimenta con señales de salida de módulos o ID_EX wires
-	.DataInput( ),
+	.DataInput({
+		alu_result_wire [31:0],
+		ID_EX_write_data_wire [31:0],
+		pc_to_branch_wire [31:0],
+		write_register_wire [4:0],
+		ID_EX_MemRead_wire,
+		ID_EX_branch_eq_ne_wire,
+		ID_EX_reg_write_wire,
+		ID_EX_MemtoReg_wire,
+		ID_EX_MemWrite_wire,
+		zero_wire
+	}),
 	//MemRead, BranchEQ_NE, RegWrite, MemtoReg, MemWrite, Zero, ALUResult,
 	//WriteData(ReadData2), WriteReg, PCShift2
 	//10
-	.DataOutput( )
+	.DataOutput({
+		EX_MEM_alu_result_wire [31:0],
+		EX_MEM_write_data_wire [31:0],
+		EX_MEM_pc_to_branch_wire [31:0],
+		EX_MEM_write_register_wire [4:0],
+		EX_MEM_MemRead_wire,
+		EX_MEM_branch_eq_ne_wire,
+		EX_MEM_reg_write_wire,
+		EX_MEM_MemtoReg_wire,
+		EX_MEM_MemWrite_wire,
+		EX_MEM_zero_wire
+	})
 );
 
 PLRegister
