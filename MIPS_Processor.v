@@ -353,6 +353,9 @@ MUX_PCJump
 * EX/MEM
 * MEM/WB
 * 
+* Entre cada uno de los registros se agregan nuevos cables
+* con una nomenclatura que identifica de donde salen o entran
+*
 * Los DataInput y DataOutput están concatenados
 */
 
@@ -367,6 +370,8 @@ IF_ID
 	.DataInput( ),
 	// PC, Instruction
 	//2
+	wire IF_ID_PC_wire;
+	wire IF_ID_Instruction_wire;
 	.DataOutput( )
 );
 
@@ -379,10 +384,25 @@ ID_EX
 	//ReadData1, ReadData2, SignExtend, InstrWire[20:16], InstrWire[15:11],
 	//RegDest, ALUSrc, MemWrite, MemToReg, RegWrite, PC, ALUOP, MemRead, BranchEQ_NE
 	//14
+	//Se alimenta con señales de salida de módulos
 	.DataInput( ),
-	//ALUOP, MemRead, BranchEQ_NE, RegWrite, MemtoReg, MemWrite, ALUSrc, RegDst
+	//ALUOp, MemRead, BranchEQ_NE, RegWrite, MemtoReg, MemWrite, ALUSrc, RegDst
 	//ReadData1, ReadData2, InstrWire[20:16], InstrWire[15:11], SignExtend, PC
 	//14
+	wire ID_EX_ALUOp_wire;
+	wire ID_EX_MemRead_wire;
+	wire ID_EX_BranchEQ_NE_wire;
+	wire ID_EX_RegWrite_wire;
+	wire ID_EX_MemWrite_wire;
+	wire ID_EX_ALUSrc_wire;
+	wire ID_EX_RegDst_wire;
+	wire ID_EX_ReadData1_wire;
+	wire ID_EX_ReadData2_wire;
+	wire ID_EX_InmmediateExtend_wire;
+	wire ID_EX_PC_wire;
+	wire ID_EX_MemtoReg_wire;
+	wire ID_EX_Instruction_20_16_wire;
+	wire ID_EX_Instruction_15_11_wire;
 	.DataOutput( )
 );
 
@@ -395,10 +415,21 @@ EX_MEM
 	//BranchEQ_NE, MemRead, RegWrite, MemtoReg, MemWrite, Zero, ALUResult,
 	//WriteData(ReadData2), WriteReg, PCShift2
 	//10
+	//Se alimenta con señales de salida de módulos o ID_EX wires
 	.DataInput( ),
 	//MemRead, BranchEQ_NE, RegWrite, MemtoReg, MemWrite, Zero, ALUResult,
 	//WriteData(ReadData2), WriteReg, PCShift2
 	//10
+	wire EX_MEM_MemRead_wire;
+	wire EX_MEM_Branch_EQ_NE_wire;
+	wire EX_MEM_RegWrite_wire;
+	wire EX_MEM_MemtoReg_wire;
+	wire EX_MEM_MemWrite_wire;
+	wire EX_MEM_Zero_wire;
+	wire EX_MEM_ALUResult_wire;
+	wire EX_MEM_WriteData_wire;
+	wire EX_MEM_WriteReg_wire;
+	wire EX_MEM_PC_Shift2_wire;
 	.DataOutput( )
 );
 
@@ -410,9 +441,15 @@ MEM_WB
 	.enable(1),
 	// RegWrite, MemtoReg, ALUResult, ReadData, WriteReg
 	//5
+	//Se alimenta con señales de salida de módulos o EX_MEM wires
 	.DataInput( ),
 	//RegWrite, MemtoReg, ALUResult, ReadData, WriteReg
 	//5
+	wire MEM_WB_RegWrite_wire;
+	wire MEM_WB_MemtoReg_wire;
+	wire MEM_WB_ALUResult_wire;
+	wire MEM_WB_ReadData_wire;
+	wire MEM_WB_WriteReg_wire;
 	.DataOutput( )
 );
 
