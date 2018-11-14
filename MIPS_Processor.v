@@ -508,10 +508,23 @@ MEM_WB
 	// RegWrite, MemtoReg, ALUResult, ReadData, WriteReg
 	//5
 	//Se alimenta con señales de salida de módulos o EX_MEM wires
-	.DataInput( ),
+	.DataInput({
+		EX_MEM_alu_result_wire [31:0],
+		ReadData_wire [31:0],
+		EX_MEM_write_register_wire [4:0],
+		EX_MEM_MemtoReg_wire,
+		EX_MEM_reg_write_wire
+	}),
 	//RegWrite, MemtoReg, ALUResult, ReadData, WriteReg
 	//5
-	.DataOutput( )
+	
+	.DataOutput({
+		MEM_WB_alu_result_wire [31:0],
+		MEM_WB_ReadData_wire [31:0],
+		MEM_WB_write_register_wire [4:0],
+		MEM_WB_MemtoReg_wire,
+		MEM_WB_reg_write_wire
+	})
 );
 
 assign ALUResultOut = alu_result_wire;
