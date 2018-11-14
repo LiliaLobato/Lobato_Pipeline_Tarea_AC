@@ -22,6 +22,11 @@
 *	2/09/2018
 ******************************************************************/
 
+/******************************************************************
+* A agregar:
+* Limpiar comentarios
+******************************************************************/
+
 
 module MIPS_Processor
 #(
@@ -66,18 +71,13 @@ wire [31:0] read_data_2_orr_inmmediate_wire;
 wire [31:0] alu_result_wire;
 wire [31:0] pc_plus_4_wire;
 wire [31:0] pc_to_branch_wire;
-
-// agregado en pract 2
 wire MemRead_wire;
 wire MemWrite_wire;
 wire Jump_wire;
 wire MemtoReg_wire;
-
 wire PCSrc_wire;
-
 wire JumpR_wire;
 wire JumpJal_wire;
-
 wire [04:0] MUX_Ra_WriteRegister_wire;
 wire [31:0] ReadData_wire;
 wire [31:0] MUX_ReadData_ALUResult_wire;
@@ -89,30 +89,32 @@ wire [31:0] MUX_to_MUX_wire;
 wire [31:0] MUX_ForRetJumpAndJump;
 wire [31:0] MUX_Jal_ReadData_ALUResult_wire;
 
+//Agregado en Tarea 2
+
 //******************************************************************/
 //******************************************************************/
 //******************************************************************/
 //******************************************************************/
 //******************************************************************/
 
-//Modificaciones 
-Control // agregamos las señales faltantes
+
+Control 
 ControlUnit
 (
 	.OP(instruction_bus_wire[31:26]),
 	.RegDst(reg_dst_wire),
-	.BranchEQ_NE(branch_eq_ne_wire), //
+	.BranchEQ_NE(branch_eq_ne_wire),
 	.MemRead (MemRead_wire), 
-	.MemtoReg (MemtoReg_wire), //
-	.MemWrite (MemWrite_wire), //
+	.MemtoReg (MemtoReg_wire),
+	.MemWrite (MemWrite_wire),
 	.ALUOp(aluop_wire),
 	.ALUSrc(alu_src_wire),
-	.Jump (Jump_wire), //
+	.Jump (Jump_wire),
 	.RegWrite(reg_write_wire)
 );
 
-//Agregado en pract 2
-DataMemory //conectamos nuestra RAM
+
+DataMemory
 #(	 
 	 .DATA_WIDTH(32),
 	 .MEMORY_DEPTH(1024)
@@ -134,8 +136,8 @@ DataMemory
 
 ShiftLeft2 //Mueve la direccion << 2 para poder accedar a memoria (lo haca multiplo de 4) 
 Left2
-( //Inmmediate_extend_wire
-	.DataInput(Inmmediate_extend_wire), //Nos da un error así que concatenamos directamente
+( 
+	.DataInput(Inmmediate_extend_wire),
 	.DataOutput(ShiftLeft2_SignExt_wire)
 );
 
@@ -153,20 +155,11 @@ Adder32bits //Agrega PC4 al JumpAddress para hacerla de 32 bits
 PC_Adder_Shift2
 (
 	.Data0(pc_plus_4_wire),
-	
-	//.Data1(Inmmediate_extend_wire),
 	.Data1({Inmmediate_extend_wire[29:0],2'b00}),
-	
 	.Result(PC_Shift2_wire) //queda PC4 + JumpAddress[25-0] + 00
 
 
 );
-
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
 
 
 PC_Register
@@ -196,12 +189,6 @@ PC_Puls_4
 	
 	.Result(pc_plus_4_wire)
 );
-
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
 
 Multiplexer2to1 //se selecciona el registro a escribir
 #(
@@ -272,15 +259,7 @@ ArithmeticLogicUnit
 	.ALUResult(alu_result_wire)
 );
 
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
 
-//MUX agregado en pract 2
-
-//aiuda
 Multiplexer2to1
 #(
 	.NBits(32)
@@ -359,6 +338,62 @@ MUX_PCJump
 	.MUX_Data1({pc_plus_4_wire[31:28],Shifted28_wire[27:0]}),
 
 	.MUX_Output(MUX_ForRetJumpAndJump)
+);
+
+//******************************************************************/
+//******************************************************************/
+//******************************************************************/
+//******************************************************************/
+//******************************************************************/
+//Register agregado en Tarea 2
+/*
+* Se necesitan 4 PLRegister:
+* IF/ID
+* ID/EX
+* EX/MEM
+* MEM/WB
+* 
+* Los DataInput y DataOutput están concatenados
+*/
+
+PLRegister
+IF_ID
+(
+	.clk(clk),
+	.reset(reset),
+	.enable(1),
+	.DataInput( ),
+	.DataOutput( )
+);
+
+PLRegister
+ID_EX
+(
+	.clk(clk),
+	.reset(reset),
+	.enable(1),
+	.DataInput( ),
+	.DataOutput( )
+);
+
+PLRegister
+EX_MEM
+(
+	.clk(clk),
+	.reset(reset),
+	.enable(1),
+	.DataInput( ),
+	.DataOutput( )
+);
+
+PLRegister
+MEM_WB
+(
+	.clk(clk),
+	.reset(reset),
+	.enable(1),
+	.DataInput( ),
+	.DataOutput( )
 );
 
 assign ALUResultOut = alu_result_wire;
