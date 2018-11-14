@@ -407,10 +407,10 @@ IF_ID
 	.enable(1),
 	// PC, Instruction
 	//2
-	.DataInput(pc_wire [31:0], instruction_bus_wire [31:0]),
+	.DataInput({pc_wire [31:0], instruction_bus_wire [31:0]}),
 	// PC, Instruction
 	//2
-	.DataOutput(IF_ID_pc_wire [31:0], IF_ID_instruction_bus_wire [31:0])
+	.DataOutput({IF_ID_pc_wire [31:0], IF_ID_instruction_bus_wire [31:0]})
 );
 
 PLRegister
@@ -423,11 +423,42 @@ ID_EX
 	//RegDest, ALUSrc, MemWrite, MemToReg, RegWrite, PC, ALUOP, MemRead, BranchEQ_NE
 	//14
 	//Se alimenta con señales de salida de módulos
-	.DataInput( ),
+	.DataInput({
+		read_data_1_wire [31:0],
+		read_data_2_wire [31:0],
+		Inmmediate_extend_wire [31:0],
+		pc_wire [31:0], 
+		IF_ID_instruction_bus_wire [20:16], 
+		IF_ID_instruction_bus_wire [15:11],
+		aluop_wire [2:0],
+		MemRead_wire,
+		branch_eq_ne_wire,
+		reg_write_wire,
+		MemWrite_wire,
+		alu_src_wire,
+		reg_dst_wire,
+		MemtoReg_wire
+	}),
 	//ALUOp, MemRead, BranchEQ_NE, RegWrite, MemtoReg, MemWrite, ALUSrc, RegDst
 	//ReadData1, ReadData2, InstrWire[20:16], InstrWire[15:11], SignExtend, PC
 	//14
-	.DataOutput( )
+	
+	.DataOutput({
+		ID_EX_read_data_1_wire [31:0],
+		ID_EX_read_data_2_wire [31:0],
+		ID_EX_Inmmediate_extend_wire [31:0],
+		ID_EX_pc_wire [31:0], 
+		ID_EX_instruction_20_16_wire [4:0], 
+		ID_EX_instruction_15_11_wire [4:0],
+		ID_EX_aluop_wire [2:0],
+		ID_EX_MemRead_wire,
+		ID_EX_branch_eq_ne_wire,
+		ID_EX_reg_write_wire,
+		ID_EX_MemWrite_wire,
+		ID_EX_alu_src_wire,
+		ID_EX_reg_dst_wire,
+		ID_EX_MemtoReg_wire
+	})
 );
 
 PLRegister
