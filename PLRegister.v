@@ -9,7 +9,7 @@
 * Date:
 *	01/03/2014
 ******************************************************************/
-module Register
+module PLRegister
 #(
 	parameter N=32,
 	parameter START=0
