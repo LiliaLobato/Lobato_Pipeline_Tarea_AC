@@ -159,8 +159,8 @@ DataMemory
 (
 	//In
 	.clk(clk),
-	.WriteData(EX_MEM_read_data_2_wire),
-	.Address({20'b0,EX_MEM_alu_result_wire[11:0]>>2}),
+	.WriteData(EX_MEM_write_data_wire),
+	.Address({20'b0,EX_MEM_write_data_wire[11:0]>>2}),
 	.MemRead(EX_MEM_MemRead_wire),
 	.MemWrite(EX_MEM_MemWrite_wire),
 	//out
@@ -356,7 +356,7 @@ PCShift_OR_PC
 (
 	.Selector(PCSrc_wire), //decide si la siguiente instruccion es de la direccion a la que saltamos o la que sigue en pc+4
 	.MUX_Data0(pc_plus_4_wire),
-	.MUX_Data1(EX_MEM_PC_Shift2_wire),
+	.MUX_Data1(EX_MEM_pc_to_branch_wire),
 
 	.MUX_Output(MUX_to_MUX_wire)
 );
