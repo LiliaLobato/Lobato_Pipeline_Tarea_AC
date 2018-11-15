@@ -159,10 +159,10 @@ DataMemory
 (
 	//In
 	.clk(clk),
-	.WriteData(EX_EM_read_data_2_wire),
-	.Address({20'b0,EX_EM_alu_result_wire[11:0]>>2}),
-	.MemRead(EX_EM_MemRead_wire),
-	.MemWrite(EX_EM_MemWrite_wire),
+	.WriteData(EX_MEM_read_data_2_wire),
+	.Address({20'b0,EX_MEM_alu_result_wire[11:0]>>2}),
+	.MemRead(EX_MEM_MemRead_wire),
+	.MemWrite(EX_MEM_MemWrite_wire),
 	//out
 	.ReadData(ReadData_wire)
 	
@@ -184,7 +184,7 @@ ShiftLeft28
 	.DataOutput(Shifted28_wire)
 );
 
-assign PCSrc_wire = EX_EM_branch_eq_ne_wire & EX_EM_zero_wire; //Define si es un salto u otra instruccion
+assign PCSrc_wire = EX_MEM_branch_eq_ne_wire & EX_MEM_zero_wire; //Define si es un salto u otra instruccion
 
 Adder32bits //Agrega PC4 al JumpAddress para hacerla de 32 bits
 PC_Adder_Shift2
@@ -232,8 +232,8 @@ Multiplexer2to1 //se selecciona el registro a escribir
 MUX_ForRTypeAndIType
 (
 	.Selector(ID_EX_reg_dst_wire),
-	.MUX_Data0(ID_EX_instruction_20_16_wire[20:16]),
-	.MUX_Data1(ID_EX_instruction_15_11_wire[15:11]),
+	.MUX_Data0(ID_EX_instruction_20_16_wire),
+	.MUX_Data1(ID_EX_instruction_15_11_wire),
 	
 	.MUX_Output(write_register_wire)
 
@@ -278,7 +278,7 @@ ALUControl
 ArithmeticLogicUnitControl
 (
 	.ALUOp(ID_EX_aluop_wire),
-	.ALUFunction(ID_EX_instruction_bus_wire[5:0]), //ID_EX_InmmediateExtend_wire[5:0]
+	.ALUFunction(ID_EX_Inmmediate_extend_wire[5:0]), //ID_EX_InmmediateExtend_wire[5:0]
 	.ALUOperation(alu_operation_wire)
 
 );
@@ -290,7 +290,7 @@ ArithmeticLogicUnit
 	.A(ID_EX_read_data_1_wire),
 	.B(read_data_2_orr_inmmediate_wire),
 	.Zero(zero_wire),
-	.shamt(ID_EX_instruction_bus_wire[10:6]), //ID_EX_InmmediateExtend_wire[10:6]
+	.shamt(ID_EX_Inmmediate_extend_wire[10:6]), //ID_EX_InmmediateExtend_wire[10:6]
 	.ALUResult(alu_result_wire)
 );
 
@@ -356,7 +356,7 @@ PCShift_OR_PC
 (
 	.Selector(PCSrc_wire), //decide si la siguiente instruccion es de la direccion a la que saltamos o la que sigue en pc+4
 	.MUX_Data0(pc_plus_4_wire),
-	.MUX_Data1(EX_EM_PC_Shift2_wire),
+	.MUX_Data1(EX_MEM_PC_Shift2_wire),
 
 	.MUX_Output(MUX_to_MUX_wire)
 );
@@ -370,7 +370,7 @@ MUX_PCJump
 (
 	.Selector(Jump_wire),
 	.MUX_Data0(MUX_to_MUX_wire),
-	.MUX_Data1({ID_PC_pc_plus_4_wire[31:28],Shifted28_wire[27:0]}),
+	.MUX_Data1({IF_ID_pc_plus_4_wire[31:28],Shifted28_wire[27:0]}),
 
 	.MUX_Output(MUX_ForRetJumpAndJump)
 );
