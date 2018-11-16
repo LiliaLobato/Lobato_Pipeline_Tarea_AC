@@ -395,10 +395,10 @@ MUX_PCJump
 */
 
 PLRegister
-IF_ID
 #(
 	.N(64)
 )
+IF_ID
 (
 	.clk(clk),
 	.reset(reset),
@@ -412,10 +412,10 @@ IF_ID
 );
 
 PLRegister
-ID_EX
 #(
 	.N(148)
 )
+ID_EX
 (
 	.clk(clk),
 	.reset(reset),
@@ -462,10 +462,10 @@ ID_EX
 );
 
 PLRegister
-EX_MEM
 #(
 	.N(107)
 )
+EX_MEM
 (
 	.clk(clk),
 	.reset(reset),
@@ -504,10 +504,10 @@ EX_MEM
 );
 
 PLRegister
-MEM_WB
 #(
 	.N(71)
 )
+MEM_WB
 (
 	.clk(clk),
 	.reset(reset),
