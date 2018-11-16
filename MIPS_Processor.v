@@ -477,7 +477,7 @@ EX_MEM
 	.DataInput({
 		alu_result_wire [31:0],
 		ID_EX_read_data_2_wire [31:0],
-		pc_to_branch_wire [31:0],
+		PC_Shift2_wire [31:0],
 		write_register_wire [4:0],
 		ID_EX_MemRead_wire,
 		ID_EX_branch_eq_ne_wire,
