@@ -95,6 +95,7 @@ wire [31:0] ID_EX_read_data_1_wire;
 wire [31:0] ID_EX_read_data_2_wire;
 wire [31:0] ID_EX_Inmmediate_extend_wire;
 wire [31:0] ID_EX_pc_plus_4_wire;
+wire [31:0] ID_EX_Shifted28_wire;
 wire [4:0] ID_EX_instruction_20_16_wire;
 wire [4:0] ID_EX_instruction_15_11_wire;
 wire [2:0] ID_EX_aluop_wire; //DUDA
@@ -105,6 +106,8 @@ wire ID_EX_MemWrite_wire;
 wire ID_EX_alu_src_wire;
 wire ID_EX_reg_dst_wire;
 wire ID_EX_MemtoReg_wire;
+wire ID_EX_Jump_wire;
+wire [5:0] ID_EX_instruction_31_26_wire;
 
 //EX_MEM
 wire [31:0] EX_MEM_alu_result_wire;
@@ -117,6 +120,12 @@ wire EX_MEM_reg_write_wire;
 wire EX_MEM_MemtoReg_wire;
 wire EX_MEM_MemWrite_wire;
 wire EX_MEM_zero_wire;
+wire [31:0] EX_MEM_read_data_1_wire;
+wire [31:0] EX_MEM_pc_plus_4_wire;
+wire EX_MEM_Jump_wire;
+wire [31:0] EX_MEM_Shifted28_wire;
+wire EX_MEM_alu_operation_wire;
+wire [5:0] EX_MEM_instruction_31_26_wire;
 
 //MEM_WB
 wire [31:0] MEM_WB_alu_result_wire;
@@ -124,6 +133,7 @@ wire [31:0] MEM_WB_ReadData_wire;
 wire [4:0] MEM_WB_write_register_wire;
 wire MEM_WB_MemtoReg_wire;
 wire MEM_WB_reg_write_wire;
+wire [31:0] MEM_WB_pc_plus_4_wire;
 
 
 //******************************************************************/
@@ -160,7 +170,7 @@ DataMemory
 	//In
 	.clk(clk),
 	.WriteData(EX_MEM_write_data_wire),
-	.Address({20'b0,EX_MEM_write_data_wire[11:0]>>2}),
+	.Address({20'b0,EX_MEM_alu_result_wire[11:0]>>2}),
 	.MemRead(EX_MEM_MemRead_wire),
 	.MemWrite(EX_MEM_MemWrite_wire),
 	//out
@@ -244,8 +254,8 @@ Register_File
 (
 	.clk(clk),
 	.reset(reset),
-	.RegWrite(MEM_WB_reg_write_wire),
-	.WriteRegister(MUX_Ra_WriteRegister_wire), //elige escribir RA o dato
+	.RegWrite(MUX_Ra_WriteRegister_wire),
+	.WriteRegister(MEM_WB_write_register_wire), //elige escribir RA o dato
 	.ReadRegister1(IF_ID_instruction_bus_wire[25:21]),
 	.ReadRegister2(IF_ID_instruction_bus_wire[20:16]),
 	.WriteData(MUX_Jal_ReadData_ALUResult_wire), //JumpAdress 
@@ -308,15 +318,15 @@ MUX_ForALUResultAndReadData //seleccionamos que resultado debemos enviar para es
 	.MUX_Output(MUX_ReadData_ALUResult_wire)
 );
 
-assign JumpR_wire = (alu_operation_wire == 4'b1110) ? 1'b1 : 1'b0; //vamos a ver si la instruccion fue JR
-assign JumpJal_wire = ({instruction_bus_wire[31:26],Jump_wire} == 7) ? 1'b1 : 1'b0; // o vemos si es Jal
+assign JumpR_wire = (EX_MEM_alu_operation_wire == 4'b1110) ? 1'b1 : 1'b0; //vamos a ver si la instruccion fue JR
+assign JumpJal_wire = ({EX_MEM_instruction_31_26_wire,EX_MEM_Jump_wire} == 7) ? 1'b1 : 1'b0; // o vemos si es Jal
 
 Multiplexer2to1
 MUX_ForRJumpAndJump //seleccionamos la siguente instruccion del PC/jump
 (
 	.Selector(JumpR_wire),
 	.MUX_Data0(MUX_ForRetJumpAndJump),
-	.MUX_Data1(read_data_1_wire),
+	.MUX_Data1(EX_MEM_read_data_1_wire),
 
 	.MUX_Output(MUX_to_PC_wire)
 );
@@ -330,7 +340,7 @@ MUX_ForJalAndReadData_AlUResult
 (
 	.Selector(JumpJal_wire),
 	.MUX_Data0(MUX_ReadData_ALUResult_wire),
-	.MUX_Data1(IF_ID_pc_plus_4_wire),
+	.MUX_Data1(MEM_WB_pc_plus_4_wire),
 
 	.MUX_Output(MUX_Jal_ReadData_ALUResult_wire)
 );
@@ -342,7 +352,7 @@ Multiplexer2to1 //seleccionamos el registro en el que escribiremos RA/Registro N
 MUX_WriteRegister_Ra
 (
 	.Selector(JumpJal_wire),
-	.MUX_Data0(write_register_wire),
+	.MUX_Data0(MEM_WB_write_register_wire),
 	.MUX_Data1(5'b11111),
 
 	.MUX_Output(MUX_Ra_WriteRegister_wire)
@@ -355,7 +365,7 @@ Multiplexer2to1 //seleccionamos cual sera la siguiente instruccion
 PCShift_OR_PC
 (
 	.Selector(PCSrc_wire), //decide si la siguiente instruccion es de la direccion a la que saltamos o la que sigue en pc+4
-	.MUX_Data0(pc_plus_4_wire),
+	.MUX_Data0(EX_MEM_pc_plus_4_wire),
 	.MUX_Data1(EX_MEM_pc_to_branch_wire),
 
 	.MUX_Output(MUX_to_MUX_wire)
@@ -368,9 +378,9 @@ Multiplexer2to1 //seleccionamos entre pc o jump
 )
 MUX_PCJump
 (
-	.Selector(Jump_wire),
+	.Selector(EX_MEM_Jump_wire),
 	.MUX_Data0(MUX_to_MUX_wire),
-	.MUX_Data1({IF_ID_pc_plus_4_wire[31:28],Shifted28_wire[27:0]}),
+	.MUX_Data1(EX_MEM_Shifted28_wire),
 
 	.MUX_Output(MUX_ForRetJumpAndJump)
 );
@@ -394,6 +404,7 @@ MUX_PCJump
 * Los DataInput y DataOutput están concatenados
 */
 
+
 PLRegister
 #(
 	.N(64)
@@ -413,7 +424,7 @@ IF_ID
 
 PLRegister
 #(
-	.N(148)
+	.N(160)
 )
 ID_EX
 (
@@ -438,7 +449,11 @@ ID_EX
 		MemWrite_wire,
 		alu_src_wire,
 		reg_dst_wire,
-		MemtoReg_wire
+		MemtoReg_wire,
+		IF_ID_pc_plus_4_wire [31:28], //agregada
+		Shifted28_wire, //agregada
+		Jump_wire, //agregada
+		IF_ID_instruction_bus_wire[31:26]
 	}),
 	//ALUOp, MemRead, BranchEQ_NE, RegWrite, MemtoReg, MemWrite, ALUSrc, RegDst
 	//ReadData1, ReadData2, InstrWire[20:16], InstrWire[15:11], SignExtend, PC
@@ -457,13 +472,16 @@ ID_EX
 		ID_EX_MemWrite_wire,
 		ID_EX_alu_src_wire,
 		ID_EX_reg_dst_wire,
-		ID_EX_MemtoReg_wire
+		ID_EX_MemtoReg_wire,
+		ID_EX_Shifted28_wire[31:0],
+		ID_EX_Jump_wire,
+		ID_EX_instruction_31_26_wire[5:0]
 	})
 );
 
 PLRegister
 #(
-	.N(107)
+	.N(210)
 )
 EX_MEM
 (
@@ -484,7 +502,12 @@ EX_MEM
 		ID_EX_reg_write_wire,
 		ID_EX_MemtoReg_wire,
 		ID_EX_MemWrite_wire,
-		zero_wire
+		zero_wire,
+		ID_EX_read_data_1_wire [31:0], //agregado
+		ID_EX_Shifted28_wire[31:0],
+		ID_EX_pc_plus_4_wire [31:0], //agregado
+		ID_EX_Jump_wire,
+		ID_EX_instruction_31_26_wire[5:0]
 	}),
 	//MemRead, BranchEQ_NE, RegWrite, MemtoReg, MemWrite, Zero, ALUResult,
 	//WriteData(ReadData2), WriteReg, PCShift2
@@ -499,13 +522,18 @@ EX_MEM
 		EX_MEM_reg_write_wire,
 		EX_MEM_MemtoReg_wire,
 		EX_MEM_MemWrite_wire,
-		EX_MEM_zero_wire
+		EX_MEM_zero_wire,
+		EX_MEM_read_data_1_wire [31:0],
+		EX_MEM_Shifted28_wire[31:0],
+		EX_MEM_pc_plus_4_wire [31:0],
+		EX_MEM_Jump_wire,
+		EX_MEM_instruction_31_26_wire[5:0]
 	})
 );
 
 PLRegister
 #(
-	.N(71)
+	.N(103)
 )
 MEM_WB
 (
@@ -520,7 +548,8 @@ MEM_WB
 		ReadData_wire [31:0],
 		EX_MEM_write_register_wire [4:0],
 		EX_MEM_MemtoReg_wire,
-		EX_MEM_reg_write_wire
+		EX_MEM_reg_write_wire,
+		EX_MEM_pc_plus_4_wire [31:0]
 	}),
 	//RegWrite, MemtoReg, ALUResult, ReadData, WriteReg
 	//5
@@ -529,7 +558,8 @@ MEM_WB
 		MEM_WB_ReadData_wire [31:0],
 		MEM_WB_write_register_wire [4:0],
 		MEM_WB_MemtoReg_wire,
-		MEM_WB_reg_write_wire
+		MEM_WB_reg_write_wire,
+		MEM_WB_pc_plus_4_wire [31:0]
 	})
 );
 
