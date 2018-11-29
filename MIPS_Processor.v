@@ -124,7 +124,7 @@ wire [31:0] EX_MEM_read_data_1_wire;
 wire [31:0] EX_MEM_pc_plus_4_wire;
 wire EX_MEM_Jump_wire;
 wire [31:0] EX_MEM_Shifted28_wire;
-wire EX_MEM_alu_operation_wire;
+wire [3:0] EX_MEM_alu_operation_wire;
 wire [5:0] EX_MEM_instruction_31_26_wire;
 
 //MEM_WB
@@ -481,7 +481,7 @@ ID_EX
 
 PLRegister
 #(
-	.N(210)
+	.N(214)
 )
 EX_MEM
 (
@@ -503,11 +503,12 @@ EX_MEM
 		ID_EX_MemtoReg_wire,
 		ID_EX_MemWrite_wire,
 		zero_wire,
-		ID_EX_read_data_1_wire [31:0], //agregado
+		ID_EX_read_data_1_wire [31:0], 
 		ID_EX_Shifted28_wire[31:0],
-		ID_EX_pc_plus_4_wire [31:0], //agregado
+		ID_EX_pc_plus_4_wire [31:0], 
 		ID_EX_Jump_wire,
-		ID_EX_instruction_31_26_wire[5:0]
+		ID_EX_instruction_31_26_wire[5:0],
+		alu_operation_wire[3:0] //agregado
 	}),
 	//MemRead, BranchEQ_NE, RegWrite, MemtoReg, MemWrite, Zero, ALUResult,
 	//WriteData(ReadData2), WriteReg, PCShift2
@@ -527,7 +528,8 @@ EX_MEM
 		EX_MEM_Shifted28_wire[31:0],
 		EX_MEM_pc_plus_4_wire [31:0],
 		EX_MEM_Jump_wire,
-		EX_MEM_instruction_31_26_wire[5:0]
+		EX_MEM_instruction_31_26_wire[5:0],
+		EX_MEM_alu_operation_wire[3:0]
 	})
 );
 
