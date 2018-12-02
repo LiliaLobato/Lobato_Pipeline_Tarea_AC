@@ -15,25 +15,23 @@
 module ProgramMemory
 #
 (
-	parameter MEMORY_DEPTH=32,
+	parameter MEMORY_DEPTH=1024,
 	parameter DATA_WIDTH=32
 )
 (
 	input [(DATA_WIDTH-1):0] Address,
 	output reg [(DATA_WIDTH-1):0] Instruction
 );
-wire [(DATA_WIDTH-1):0] RealAddress;
-
-//movemos para que coincidan con verdaderas localidades de memoria
-assign RealAddress = {2'b0,Address[(DATA_WIDTH-24):2]};
+wire [9:0] RealAddress;
+	assign RealAddress = (Address - 4194304)/4;
+//assign RealAddress = {2'b0,Address[(DATA_WIDTH-1):2]};
 
 	// Declare the ROM variable
 	reg [DATA_WIDTH-1:0] rom[MEMORY_DEPTH-1:0];
 
 	initial
 	begin
-		//$readmemh("C:/MIPS/Single_Cycle_Practica2/Sources/ProgramaPrueba.dat", rom);
-		$readmemh("C:/MIPS/Single_Cycle_Practica2/Sources/text.dat", rom);
+		$readmemh("C:/Users/Andrea/Desktop/pruebas.dat", rom);
 	end
 
 	always @ (RealAddress)

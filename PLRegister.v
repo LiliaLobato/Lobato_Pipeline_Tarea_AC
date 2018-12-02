@@ -1,8 +1,6 @@
 /******************************************************************
 * Description
-*	This is a register of 32-bit that corresponds to the PC counter. 
-*	This register does not have an enable signal.
-* Version:
+*	This the basic register that is used in the register file
 *	1.0
 * Author:
 *	Dr. José Luis Pizano Escalante
@@ -11,32 +9,28 @@
 * Date:
 *	01/03/2014
 ******************************************************************/
-
-module PC_Register
+module PipeRegister
 #(
-	parameter N=32
+	parameter N=64
 )
 (
 	input clk,
 	input reset,
-	input write, 
-	input  [N-1:0] NewPC,
+	input enable,
+	input flush,
+	input  [N-1:0] DataInput,
 	
 	
-	output reg [N-1:0] PCValue
+	output reg [N-1:0] DataOutput
 );
 
-
 always@(negedge reset or posedge clk) begin
-	
 	if(reset==0)
-		PCValue <= 32'h00400000;//empezaremos la ROM 400000
-	else if (write)
-		PCValue <= NewPC;
-	
-	
-	
+		DataOutput <= 0;
+	else if (flush == 1)
+		DataOutput <= 0;
+	else	if(enable==1)
+			DataOutput<=DataInput;
 end
-
 
 endmodule

@@ -33,11 +33,9 @@ localparam OR  = 4'b0001;
 localparam NOR = 4'b0010;
 localparam ADD = 4'b0011;
 localparam SUB = 4'b0100;
-localparam SRL = 4'b0101;
-localparam SLL = 4'b0110;
-localparam LUI = 4'b0111;
-localparam BEQ = 4'b1000;
-localparam BNE = 4'b1001;
+localparam LUI = 4'b0101;
+localparam SRL = 4'b0110; 
+localparam SLL = 4'b0111; 
 
    //se agrega la instruccion en el switch case
    always @ (A or B or ALUOperation or shamt)
@@ -47,22 +45,18 @@ localparam BNE = 4'b1001;
 			ALUResult=A + B;
 		  SUB: // sub
 			ALUResult=A - B;
-		  OR: 
-			ALUResult=A | B;
-		  AND:
+		  AND: //and
 			ALUResult=A & B;
-		  NOR:
-			ALUResult= ~(A | B);
-		  SRL:
-			ALUResult= B >> shamt;
-		  SLL:
-			ALUResult= B << shamt;
+		  OR: //or
+			ALUResult =A|B;
+		  NOR: //nor
+		   ALUResult = ~(A|B);
 		  LUI:
-			ALUResult= B << 16;
-		  BEQ:
-			ALUResult= (A == B) ? 1'b0 : 1'b1;
-		  BNE:
-			ALUResult= (A != B) ? 1'b0 : 1'b1;
+		   ALUResult = {B, 16'b0};
+		  SLL: 
+			ALUResult = B << shamt; 
+		  SRL: 
+			ALUResult = B >> shamt;
 		default:
 			ALUResult= 0;
 		endcase // case(control)
