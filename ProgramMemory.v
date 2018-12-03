@@ -31,7 +31,7 @@ wire [9:0] RealAddress;
 
 	initial
 	begin
-		$readmemh("C:/Users/Andrea/Desktop/pruebas.dat", rom);
+		$readmemh("C:/MIPS/Pipeline_Practica3/Sources/text.dat", rom);
 	end
 
 	always @ (RealAddress)

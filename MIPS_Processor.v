@@ -605,7 +605,7 @@ MUX_ForWriteDataToFR
 
 );
 
-assign ALUResultOut = alu_result_wire;
+assign ALUResultOut = ALUResult_wire;
 
 endmodule
 
