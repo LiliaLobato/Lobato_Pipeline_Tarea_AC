@@ -24,7 +24,7 @@ module DataMemory
 
 	//Real Address variable
 	wire [9:0] realAddress;
-	assign realAddress = (Address - 268500992)/4; //1001 0000
+	assign realAddress = (Address - 268500992)/4;
 	
 	// Declare the RAM variable
 	reg [DATA_WIDTH-1:0] ram[MEMORY_DEPTH-1:0];

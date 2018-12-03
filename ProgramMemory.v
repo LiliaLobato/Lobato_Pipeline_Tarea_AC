@@ -31,7 +31,7 @@ wire [9:0] RealAddress;
 
 	initial
 	begin
-		$readmemh("C:/MIPS/Pipeline_Practica3/Sources/text.dat", rom);
+		$readmemh("C:/MIPS/Computer-Architecture_p3-master/ModelSim/text.dat", rom);
 	end
 
 	always @ (RealAddress)
@@ -40,3 +40,4 @@ wire [9:0] RealAddress;
 	end
 
 endmodule
+

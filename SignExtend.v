@@ -11,7 +11,7 @@
 * Date:
 *	01/03/2014
 ******************************************************************/
-module SignExtend
+module SignExtend 
 (   
 	input [15:0]  DataInput,
    output[31:0] SignExtendOutput

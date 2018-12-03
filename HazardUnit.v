@@ -38,3 +38,4 @@ end
 assign flush = (jump || jal || branch || jr);
 
 endmodule 
+

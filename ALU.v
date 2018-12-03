@@ -22,12 +22,10 @@ module ALU
 	input [3:0] ALUOperation,
 	input [31:0] A,
 	input [31:0] B,
-	input [4:0] shamt, //se agrego shamt como input a la ALU
+	input [4:0] shamt,
 	output reg Zero,
 	output reg [31:0]ALUResult
 );
-
-//Se declaran las instrucciones que podra ejecutar la ALU que corresponden a la salida de ALUControl
 localparam AND = 4'b0000;
 localparam OR  = 4'b0001;
 localparam NOR = 4'b0010;
@@ -36,9 +34,8 @@ localparam SUB = 4'b0100;
 localparam LUI = 4'b0101;
 localparam SRL = 4'b0110; 
 localparam SLL = 4'b0111; 
-
-   //se agrega la instruccion en el switch case
-   always @ (A or B or ALUOperation or shamt)
+   
+   always @ (A or B or ALUOperation)
      begin
 		case (ALUOperation)
 		  ADD: // add
@@ -56,7 +53,10 @@ localparam SLL = 4'b0111;
 		  SLL: 
 			ALUResult = B << shamt; 
 		  SRL: 
-			ALUResult = B >> shamt;
+			ALUResult = B >> shamt; 
+		  
+			
+
 		default:
 			ALUResult= 0;
 		endcase // case(control)
